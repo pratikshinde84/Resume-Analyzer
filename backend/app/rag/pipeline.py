@@ -9,6 +9,7 @@ from llama_index.core.llms.mock import MockLLM
 from llama_index.core.embeddings import MockEmbedding
 from llama_index.core.node_parser import SentenceSplitter
 from app.config import settings
+from app.rag.text_utils import sanitize_text
 from app.storage.r2_client import delete_file, get_r2_client
 import logging
 from google import genai
@@ -144,9 +145,13 @@ def index_document(
         # Enforce original filename in metadata for clean citations and LLM context
         for doc in documents:
             doc.metadata["file_name"] = filename
+            if doc.text:
+                doc.text = sanitize_text(doc.text) or ""
 
         # Extract complete parsed text
         full_text = "\n".join([doc.text for doc in documents]).strip()
+        full_text = sanitize_text(full_text) or ""
+        full_text = full_text.strip()
 
         if not full_text:
             raise ValueError("EMPTY_DOCUMENT")
@@ -557,7 +562,7 @@ async def query(
                     "id": uuid.uuid4(),
                     "message_id": assistant_msg.id,
                     "document_id": uuid.UUID(c_data["document_id"]),
-                    "excerpt": c_data["excerpt"],
+                    "excerpt": sanitize_text(c_data["excerpt"]),
                     "page_number": c_data["page_number"]
                 }
                 for c_data in grouped_citations_data
@@ -811,7 +816,7 @@ async def query_unified(
                     "id": uuid.uuid4(),
                     "message_id": assistant_msg.id,
                     "document_id": uuid.UUID(c_data["document_id"]),
-                    "excerpt": c_data["excerpt"],
+                    "excerpt": sanitize_text(c_data["excerpt"]),
                     "page_number": c_data["page_number"]
                 }
                 for c_data in grouped_citations_data
@@ -1100,7 +1105,7 @@ async def query_workspace(
                     "id": uuid_mod.uuid4(),
                     "message_id": assistant_msg.id,
                     "document_id": uuid_mod.UUID(c_data["document_id"]),
-                    "excerpt": c_data["excerpt"],
+                    "excerpt": sanitize_text(c_data["excerpt"]),
                     "page_number": c_data["page_number"]
                 }
                 for c_data in grouped_citations_data

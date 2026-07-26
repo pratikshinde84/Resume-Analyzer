@@ -106,6 +106,13 @@ async def upload_document(
             user_id=user_id,
             doc_id=doc_id
         )
+    except ValueError as val_err:
+        if str(val_err) == "EMPTY_DOCUMENT":
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Could not extract text from this document. It may be a scanned image or corrupted."
+            )
+        raise val_err
     except Exception as e:
         # Note: index_document itself rolls back the uploaded file from S3 and cleans up local index,
         # but raises the exception. We propagate it.

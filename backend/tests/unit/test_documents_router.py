@@ -387,3 +387,24 @@ def test_delete_document_not_found(client, mock_db):
         mock_db.delete.assert_not_called()
         mock_db.commit.assert_not_called()
 
+
+def test_upload_document_empty_document_error(client, mock_db):
+    """
+    Test document upload when index_document raises ValueError("EMPTY_DOCUMENT").
+    Verifies that the API catches it and returns HTTP 422 Unprocessable Entity.
+    """
+    user_uuid = uuid.uuid4()
+    mock_payload = {"sub": str(user_uuid), "email": "test@example.com"}
+
+    with patch("app.auth.middleware.decode_token", return_value=mock_payload), \
+         patch("app.routers.documents.upload_file", return_value=f"{user_uuid}/mock-doc-id/test.pdf"), \
+         patch("app.routers.documents.index_document", side_effect=ValueError("EMPTY_DOCUMENT")):
+
+        files = {"file": ("test.pdf", b"PDF file with no extractable text", "application/pdf")}
+        headers = {"Authorization": "Bearer dummy-token"}
+
+        response = client.post("/documents/upload", files=files, headers=headers)
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert "Could not extract text from this document" in response.json()["detail"]
+
+
