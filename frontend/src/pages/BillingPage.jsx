@@ -53,7 +53,7 @@ const BillingPage = () => {
   const plans = [
     {
       id: 'free', name: 'Free', price: '$0', period: '/month',
-      description: 'Get started with Lexis RAG intelligence',
+      description: 'Get started with Cv-Insight RAG intelligence',
       features: ['100 queries / month', '10 document uploads', '100 MB vector storage', 'Standard AI models', 'Community support'],
       cta: 'Current Plan', disabled: true
     },
@@ -124,74 +124,89 @@ const BillingPage = () => {
           </p>
         </div>
 
-        {/* Usage Overview Grid */}
-        <div className="billing-usage-grid">
-          <UsageMetricCard
-            icon={<Zap className="icon text-accent" />}
-            label="Queries Consumed"
-            used={u.qUsed}
-            limit={u.qLimit}
-            percent={usagePercent(u.qUsed, u.qLimit)}
-          />
-          <UsageMetricCard
-            icon={<FileText className="icon text-accent" />}
-            label="Documents Indexed"
-            used={u.dUsed}
-            limit={u.dLimit}
-            percent={usagePercent(u.dUsed, u.dLimit)}
-          />
-          <UsageMetricCard
-            icon={<CreditCard className="icon text-accent" />}
-            label="Vector Storage"
-            used={u.sUsed}
-            limit={u.sLimit}
-            percent={usagePercent(u.sUsed, u.sLimit)}
-            unit="MB"
-          />
+        {/* Usage Overview Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          {[
+            { label: 'Queries Consumed', used: u.qUsed, limit: u.qLimit, unit: '', color: '#0052ff' },
+            { label: 'Documents Indexed', used: u.dUsed, limit: u.dLimit, unit: '', color: '#05b169' },
+            { label: 'Vector Storage', used: u.sUsed, limit: u.sLimit, unit: ' MB', color: '#f4b000' }
+          ].map((m) => {
+            const pct = usagePercent(m.used, m.limit);
+            return (
+              <div key={m.label} className="bg-white dark:bg-[#16181c] border border-[#dee1e6] dark:border-[#212327] rounded-[24px] p-6 flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono uppercase tracking-wider text-[#5b616e] dark:text-[#a8acb3]">{m.label}</span>
+                  <span className="text-xs font-mono text-[#7c828a]">{Math.round(pct)}%</span>
+                </div>
+                <div className="text-2xl font-normal tracking-tight text-[#0a0b0d] dark:text-white">
+                  <strong>{m.used}</strong>
+                  <span className="text-base text-[#5b616e] dark:text-[#a8acb3]">
+                    {m.unit} / {m.limit >= 999999 ? '∞' : `${m.limit}${m.unit}`}
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full bg-[#eef0f3] dark:bg-[#212327] overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: m.color }} />
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Subscription Tier Cards */}
-        <div className="billing-plans-section">
-          <div className="section-title-box">
-            <h2>Select Membership Plan</h2>
-            <p className="text-secondary">Scale vector indexing and model inference as your workflow expands.</p>
+        <div className="mb-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-normal tracking-tight text-[#0a0b0d] dark:text-white">Select Membership Plan</h2>
+            <p className="text-sm text-[#5b616e] dark:text-[#a8acb3] mt-1">Scale vector indexing and model inference as your workflow expands.</p>
           </div>
 
-          <div className="plans-grid-three">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {plans.map(p => {
               const isCurrent = u.plan === p.id;
+              const isFeatured = p.highlighted;
               return (
-                <div 
-                  key={p.id} 
-                  className={`glass-panel plan-tier-card ${p.highlighted ? 'highlighted-plan' : ''} ${isCurrent ? 'current-plan' : ''}`}
+                <div
+                  key={p.id}
+                  className={`rounded-[24px] p-8 flex flex-col justify-between gap-6 border transition-all duration-200
+                    ${isFeatured
+                      ? 'bg-[#0a0b0d] border-[#212327] text-white shadow-xl'
+                      : 'bg-white dark:bg-[#16181c] border-[#dee1e6] dark:border-[#212327]'
+                    }`}
                 >
-                  {p.highlighted && <span className="tier-pill badge-popular">MOST POPULAR</span>}
-                  {isCurrent && <span className="tier-pill badge-current">CURRENT TIER</span>}
-                  
-                  <h3 className="plan-name">{p.name}</h3>
-                  <div className="plan-price-row">
-                    <span className="price-val">{p.price}</span>
-                    <span className="period-lbl">{p.period}</span>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <span className={`font-mono text-xs uppercase tracking-widest ${isFeatured ? 'text-[#a8acb3]' : 'text-[#5b616e] dark:text-[#a8acb3]'}`}>{p.name}</span>
+                      {isFeatured && <span className="px-3 py-1 bg-[#0052ff] rounded-full text-xs font-mono text-white">Popular</span>}
+                      {isCurrent && <span className="px-3 py-1 bg-[#05b169]/20 rounded-full text-xs font-mono text-[#05b169] border border-[#05b169]/30">Active</span>}
+                    </div>
+
+                    <div className="flex items-end gap-1">
+                      <span className={`text-4xl font-normal tracking-tight ${isFeatured ? 'text-white' : 'text-[#0a0b0d] dark:text-white'}`}>{p.price}</span>
+                      <span className={`text-sm mb-1.5 ${isFeatured ? 'text-[#7c828a]' : 'text-[#5b616e] dark:text-[#a8acb3]'}`}>{p.period}</span>
+                    </div>
+
+                    <p className={`text-sm leading-relaxed ${isFeatured ? 'text-[#a8acb3]' : 'text-[#5b616e] dark:text-[#a8acb3]'}`}>{p.description}</p>
+
+                    <ul className="flex flex-col gap-2.5">
+                      {p.features.map((f, i) => (
+                        <li key={i} className={`flex items-center gap-2.5 text-sm ${isFeatured ? 'text-[#a8acb3]' : 'text-[#5b616e] dark:text-[#a8acb3]'}`}>
+                          <Check className="w-4 h-4 flex-shrink-0 text-[#05b169]" />
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <p className="plan-description">{p.description}</p>
-                  
-                  <ul className="plan-feature-list">
-                    {p.features.map((f, i) => (
-                      <li key={i} className="feature-item">
-                        <Check className="icon-xs text-accent" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <button 
+
+                  <button
                     type="button"
-                    className={`btn plan-action-btn ${isCurrent ? 'outline-btn disabled' : p.highlighted ? 'primary-btn' : 'outline-btn'}`}
-                    disabled={isCurrent || p.disabled}
+                    className={`w-full h-11 rounded-full font-semibold text-sm transition-all duration-150 cursor-pointer disabled:cursor-default
+                      ${isCurrent ? 'bg-[#eef0f3] dark:bg-[#212327] text-[#7c828a] cursor-default' :
+                        isFeatured ? 'bg-[#0052ff] hover:bg-[#003ecc] text-white' :
+                        'bg-[#0a0b0d] dark:bg-white hover:opacity-90 text-white dark:text-[#0a0b0d]'
+                      }`}
+                    disabled={isCurrent}
                     onClick={() => alert(`Upgrading to ${p.name} tier plan...`)}
                   >
-                    <span>{isCurrent ? 'Current Active Plan' : p.cta}</span>
-                    {!isCurrent && <ArrowRight className="icon-xs" />}
+                    {isCurrent ? 'Current Plan' : p.cta}
                   </button>
                 </div>
               );
@@ -201,12 +216,10 @@ const BillingPage = () => {
 
         {/* Invoice Statements Table */}
         {invoices.length > 0 && (
-          <div className="billing-invoices-section mt-6">
-            <div className="section-title-box">
-              <h2>Invoice Statements</h2>
-            </div>
-            <div className="glass-panel invoices-table-container">
-              <div className="invoice-row header-row">
+          <div className="mb-8">
+            <h2 className="text-xl font-normal tracking-tight text-[#0a0b0d] dark:text-white mb-4">Invoice Statements</h2>
+            <div className="bg-white dark:bg-[#16181c] border border-[#dee1e6] dark:border-[#212327] rounded-[24px] overflow-hidden">
+              <div className="grid grid-cols-5 px-6 py-3 border-b border-[#dee1e6] dark:border-[#212327] text-xs font-mono uppercase tracking-wider text-[#5b616e] dark:text-[#a8acb3]">
                 <span>Date</span>
                 <span>Description</span>
                 <span>Amount</span>
@@ -214,22 +227,16 @@ const BillingPage = () => {
                 <span className="text-right">Receipt</span>
               </div>
               {invoices.map(inv => (
-                <div key={inv.id} className="invoice-row">
-                  <span className="invoice-date">
-                    {new Date(inv.date).toLocaleDateString()}
-                  </span>
-                  <span className="invoice-desc">{inv.description}</span>
-                  <span className="invoice-amount">{inv.amount}</span>
-                  <span>
-                    <span className={`status-pill status-${inv.status}`}>{inv.status}</span>
-                  </span>
+                <div key={inv.id} className="grid grid-cols-5 px-6 py-4 border-b border-[#eef0f3] dark:border-[#212327] last:border-0 items-center text-sm text-[#0a0b0d] dark:text-white">
+                  <span className="font-mono text-xs text-[#5b616e] dark:text-[#a8acb3]">{new Date(inv.date).toLocaleDateString()}</span>
+                  <span>{inv.description}</span>
+                  <span className="font-mono">{inv.amount}</span>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-mono inline-block w-fit ${
+                    inv.status === 'paid' ? 'bg-[#05b169]/10 text-[#05b169] border border-[#05b169]/20' : 'bg-[#f4b000]/10 text-[#f4b000] border border-[#f4b000]/20'
+                  }`}>{inv.status}</span>
                   <div className="text-right">
-                    <button 
-                      type="button"
-                      className="btn-icon text-btn"
-                      title="Download Invoice PDF"
-                    >
-                      <Download className="icon-sm" />
+                    <button type="button" className="p-2 rounded-full hover:bg-[#f7f7f7] dark:hover:bg-[#212327] text-[#5b616e] dark:text-[#a8acb3] transition-colors">
+                      <Download className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -264,3 +271,4 @@ const UsageMetricCard = ({ icon, label, used, limit, percent, unit = '' }) => (
 );
 
 export default BillingPage;
+

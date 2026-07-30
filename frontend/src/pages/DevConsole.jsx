@@ -79,7 +79,7 @@ function DevConsole() {
       {/* Subnav Strip */}
       <div className="subnav-strip">
         <div className="subnav-links">
-          <span>LEXIS DEVELOPER DIAGNOSTICS & STRESS TEST CONSOLE</span>
+          <span>CV-INSIGHT DEVELOPER DIAGNOSTICS & STRESS TEST CONSOLE</span>
         </div>
         <div>
           <Link to="/" className="subnav-link">← RETURN TO WORKSPACE</Link>
@@ -175,7 +175,7 @@ function DevConsole() {
       </div>
 
       <footer className="footer-bar">
-        <div>© 2026 LEXIS CORP • DEV DIAGNOSTIC CONSOLE</div>
+        <div>© 2026 CV-INSIGHT CORP • DEV DIAGNOSTIC CONSOLE</div>
         <div>
           <span className="esrb-badge">INTERNAL TOOLS</span>
         </div>

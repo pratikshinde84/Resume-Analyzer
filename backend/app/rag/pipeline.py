@@ -44,7 +44,7 @@ def generate_summary(text: str, filename: str) -> str:
     if settings.GEMINI_API_KEY:
         try:
             client = genai.Client(api_key=settings.GEMINI_API_KEY, http_options={"timeout": 30000})
-            for m in ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"]:
+            for m in ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-pro"]:
                 try:
                     res = client.models.generate_content(model=m, contents=prompt)
                     if res and res.text:
@@ -145,8 +145,15 @@ def index_document(
         # Enforce original filename in metadata for clean citations and LLM context
         for doc in documents:
             doc.metadata["file_name"] = filename
-            if doc.text:
-                doc.text = sanitize_text(doc.text) or ""
+            raw_text = getattr(doc, "text", "") or ""
+            sanitized = sanitize_text(raw_text) or ""
+            if hasattr(doc, "set_content"):
+                doc.set_content(sanitized)
+            else:
+                try:
+                    doc.text = sanitized
+                except AttributeError:
+                    pass
 
         # Extract complete parsed text
         full_text = "\n".join([doc.text for doc in documents]).strip()

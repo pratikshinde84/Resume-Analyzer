@@ -138,32 +138,36 @@ const ProfilePage = () => {
       <main className="main-content page-container">
         {/* Page Header */}
         <div className="page-header-title">
-          <h1 className="page-title">User Profile & Identity</h1>
+          <h1 className="page-title">Profile & Identity</h1>
           <p className="page-subtitle">
             Manage your display identity, view document usage metrics, and security settings.
           </p>
         </div>
 
         {/* Profile Grid */}
-        <div className="profile-layout-grid">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
           {/* Left Column: Avatar & Quick Metrics */}
-          <div className="glass-panel profile-hero-card">
-            <div className="avatar-wrapper">
-              <div className="avatar-circle-lg overflow-hidden">
+          <div className="bg-white dark:bg-[#16181c] border border-[#dee1e6] dark:border-[#212327] rounded-[24px] p-8 flex flex-col items-center gap-6">
+            {/* Avatar */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-20 h-20 rounded-full bg-[#0052ff] flex items-center justify-center text-white text-3xl font-normal overflow-hidden">
                 {profile.avatar_url ? (
                   <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
                   (profile.display_name || profile.email)?.[0]?.toUpperCase() || 'U'
                 )}
               </div>
-              <span className="user-role-badge">{profile.role || 'Workspace Member'}</span>
+              <span className="px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider bg-[#0052ff]/10 border border-[#0052ff]/20 text-[#0052ff]">
+                {profile.role || 'Workspace Member'}
+              </span>
             </div>
 
+            {/* Name Edit */}
             {isEditing ? (
-              <div className="profile-edit-box">
+              <div className="flex flex-col gap-3 w-full">
                 <input
                   type="text"
-                  className="profile-input-field"
+                  className="w-full h-11 px-4 bg-[#f7f7f7] dark:bg-[#212327] border border-[#dee1e6] dark:border-[#212327] rounded-xl text-sm text-[#0a0b0d] dark:text-white outline-none focus:border-[#0052ff] transition-all"
                   value={editName}
                   onChange={e => setEditName(e.target.value)}
                   placeholder="Display name"
@@ -171,125 +175,102 @@ const ProfilePage = () => {
                   autoFocus
                   onKeyDown={e => e.key === 'Enter' && handleSave()}
                 />
-                <div className="profile-edit-btn-group">
-                  <button 
+                <div className="flex gap-2">
+                  <button
                     type="button"
-                    className="btn outline-btn btn-sm" 
-                    onClick={() => {
-                      setIsEditing(false);
-                      setEditName(profile.display_name || '');
-                    }} 
+                    className="flex-1 h-10 rounded-full border border-[#dee1e6] dark:border-[#212327] text-sm text-[#5b616e] hover:bg-[#f7f7f7] dark:hover:bg-[#212327] transition-colors"
+                    onClick={() => { setIsEditing(false); setEditName(profile.display_name || ''); }}
                     disabled={saving}
                   >
-                    <X className="icon-xs" />
+                    Cancel
                   </button>
-                  <button 
+                  <button
                     type="button"
-                    className="btn primary-btn btn-sm" 
-                    onClick={handleSave} 
+                    className="flex-1 h-10 rounded-full bg-[#0052ff] hover:bg-[#003ecc] text-white text-sm font-medium transition-colors flex items-center justify-center gap-1"
+                    onClick={handleSave}
                     disabled={saving}
                   >
-                    {saving ? <RefreshCw className="icon-xs animate-spin" /> : <Check className="icon-xs" />}
+                    {saving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                    Save
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="profile-name-row">
-                <h2>{profile.display_name || profile.username || 'Workspace User'}</h2>
-                <button 
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-normal text-[#0a0b0d] dark:text-white tracking-tight">
+                  {profile.display_name || profile.username || 'Workspace User'}
+                </h2>
+                <button
                   type="button"
-                  className="btn-icon text-btn" 
+                  className="p-1.5 rounded-full hover:bg-[#f7f7f7] dark:hover:bg-[#212327] text-[#5b616e] transition-colors"
                   title="Edit Display Name"
                   onClick={() => setIsEditing(true)}
                 >
-                  <Edit2 className="icon-sm" />
+                  <Edit2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
 
-            <div className="profile-email-badge">
-              <Mail className="icon-xs" />
+            <div className="flex items-center gap-2 text-sm text-[#5b616e] dark:text-[#a8acb3]">
+              <Mail className="w-3.5 h-3.5" />
               <span>{profile.email}</span>
             </div>
 
             {/* Quick Metrics */}
-            <div className="profile-metrics-grid">
-              <div className="metric-box">
-                <Search className="icon metric-icon text-accent" />
-                <span className="metric-num">{profile.total_queries ?? 0}</span>
-                <span className="metric-lbl">Total Queries</span>
-              </div>
-
-              <div className="metric-box">
-                <FileText className="icon metric-icon text-accent" />
-                <span className="metric-num">{profile.total_documents ?? 0}</span>
-                <span className="metric-lbl">Indexed Docs</span>
-              </div>
-
-              <div className="metric-box">
-                <Database className="icon metric-icon text-accent" />
-                <span className="metric-num">{profile.storage_used_mb ?? 0} MB</span>
-                <span className="metric-lbl">Vector Storage</span>
-              </div>
+            <div className="grid grid-cols-3 gap-3 w-full pt-4 border-t border-[#dee1e6] dark:border-[#212327]">
+              {[
+                { label: 'Queries', value: profile.total_queries ?? 0 },
+                { label: 'Docs', value: profile.total_documents ?? 0 },
+                { label: 'Storage', value: `${profile.storage_used_mb ?? 0}MB` }
+              ].map(m => (
+                <div key={m.label} className="flex flex-col items-center gap-1 text-center">
+                  <span className="text-xl font-normal text-[#0a0b0d] dark:text-white tracking-tight">{m.value}</span>
+                  <span className="text-xs font-mono text-[#7c828a] uppercase tracking-wider">{m.label}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Right Column: Account Meta & Danger Zone */}
-          <div className="profile-details-stack">
+          <div className="flex flex-col gap-4">
             {/* Account Details Card */}
-            <div className="glass-panel profile-info-card">
-              <div className="card-header-bar">
-                <Shield className="icon text-accent" />
-                <h3>Account Meta & Session</h3>
+            <div className="bg-white dark:bg-[#16181c] border border-[#dee1e6] dark:border-[#212327] rounded-[24px] p-8">
+              <div className="flex items-center gap-2 mb-6">
+                <Shield className="w-4 h-4 text-[#0052ff]" />
+                <h3 className="text-base font-medium text-[#0a0b0d] dark:text-white">Account Meta & Session</h3>
               </div>
 
-              <div className="info-rows-list">
-                <div className="info-row">
-                  <span className="info-key">Member Since</span>
-                  <span className="info-val">
-                    <Calendar className="icon-xs" />
-                    {new Date(profile.created_at || Date.now()).toLocaleDateString('en-US', {
-                      year: 'numeric', month: 'short', day: 'numeric'
-                    })}
-                  </span>
-                </div>
-
-                <div className="info-row">
-                  <span className="info-key">Last Login</span>
-                  <span className="info-val">
-                    {profile.last_login 
-                      ? new Date(profile.last_login).toLocaleString()
-                      : 'Active Session'
-                    }
-                  </span>
-                </div>
-
-                <div className="info-row">
-                  <span className="info-key">Current Tier Plan</span>
-                  <span className={`plan-pill plan-${(profile.plan || 'free').toLowerCase()}`}>
-                    {profile.plan || 'Free'}
-                  </span>
-                </div>
-
-                <div className="info-row">
-                  <span className="info-key">Unique User ID</span>
-                  <span className="info-val mono-text">{profile.id}</span>
-                </div>
+              <div className="flex flex-col gap-0">
+                {[
+                  { label: 'Member Since', value: new Date(profile.created_at || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) },
+                  { label: 'Last Login', value: profile.last_login ? new Date(profile.last_login).toLocaleString() : 'Active Session' },
+                  { label: 'Current Plan', value: (
+                    <span className={`px-3 py-1 rounded-full text-xs font-mono uppercase ${profile.plan?.toLowerCase() === 'pro' ? 'bg-[#0052ff]/10 text-[#0052ff] border border-[#0052ff]/20' : 'bg-[#f7f7f7] dark:bg-[#212327] text-[#5b616e] dark:text-[#a8acb3] border border-[#dee1e6] dark:border-[#212327]'}`}>
+                      {profile.plan || 'Free'}
+                    </span>
+                  )},
+                  { label: 'User ID', value: <span className="font-mono text-xs text-[#5b616e] dark:text-[#a8acb3] break-all">{profile.id}</span> }
+                ].map((row, i) => (
+                  <div key={i} className="flex items-center justify-between py-4 border-b border-[#eef0f3] dark:border-[#212327] last:border-0">
+                    <span className="text-sm text-[#5b616e] dark:text-[#a8acb3]">{row.label}</span>
+                    <span className="text-sm text-[#0a0b0d] dark:text-white text-right">{row.value}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Danger Zone Card */}
-            <div className="glass-panel danger-zone-card">
-              <div className="card-header-bar text-danger">
-                <AlertTriangle className="icon" />
-                <h3>Danger Zone</h3>
+            <div className="bg-white dark:bg-[#16181c] border border-[#cf202f]/20 rounded-[24px] p-8">
+              <div className="flex items-center gap-2 mb-3">
+                <AlertTriangle className="w-4 h-4 text-[#cf202f]" />
+                <h3 className="text-base font-medium text-[#cf202f]">Danger Zone</h3>
               </div>
-              <p className="danger-zone-desc">
-                Permanently remove your account, clear vector indexes, and purge all uploaded document files from Lexis.
+              <p className="text-sm text-[#5b616e] dark:text-[#a8acb3] mb-5 leading-relaxed">
+                Permanently remove your account, clear vector indexes, and purge all uploaded document files from Cv-Insight.
               </p>
-              <button 
+              <button
                 type="button"
-                className="btn danger-btn" 
+                className="h-11 px-6 rounded-full bg-[#cf202f] hover:bg-[#a01524] text-white text-sm font-semibold transition-colors flex items-center gap-2"
                 onClick={() => {
                   setShowDeleteModal(true);
                   setPassword('');
@@ -297,8 +278,8 @@ const ProfilePage = () => {
                   setDeleteError('');
                 }}
               >
-                <Trash2 className="icon-sm" />
-                <span>Delete Account & Purge Data</span>
+                <Trash2 className="w-4 h-4" />
+                Delete Account & Purge Data
               </button>
             </div>
           </div>
@@ -306,8 +287,8 @@ const ProfilePage = () => {
 
         {/* Floating Toast Notification */}
         {saveStatus && (
-          <div className={`settings-toast toast-${saveStatus.type} glass-panel`}>
-            {saveStatus.type === 'success' ? <Check className="icon text-success" /> : <AlertTriangle className="icon text-danger" />}
+          <div className={`fixed bottom-6 right-6 flex items-center gap-3 px-5 py-3 rounded-full border shadow-lg z-50 text-sm font-medium ${saveStatus.type === 'success' ? 'bg-[#05b169]/10 border-[#05b169]/30 text-[#05b169]' : 'bg-[#cf202f]/10 border-[#cf202f]/30 text-[#cf202f]'}`}>
+            {saveStatus.type === 'success' ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
             <span>{saveStatus.message}</span>
           </div>
         )}
@@ -315,58 +296,54 @@ const ProfilePage = () => {
 
       {/* Delete Account High-Severity Confirmation Modal */}
       {showDeleteModal && (
-        <div 
-          className="modal-backdrop"
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[2000] p-6"
           onClick={() => !deleting && setShowDeleteModal(false)}
         >
-          <div 
-            className="modal-card modal-card-danger glass-panel"
+          <div
+            className="bg-white dark:bg-[#16181c] border border-[#cf202f]/20 rounded-[24px] p-8 w-full max-w-lg flex flex-col gap-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyBetween: 'space-between', gap: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <AlertTriangle className="icon-lg text-danger" />
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="w-5 h-5 text-[#cf202f] flex-shrink-0" />
                 <div>
-                  <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#ef4444' }}>PERMANENT ACCOUNT DELETION</h3>
-                  <p className="info-key" style={{ fontSize: '12px', color: '#fca5a5' }}>This action is irreversible and permanent.</p>
+                  <h3 className="text-lg font-semibold text-[#cf202f]">Permanent Account Deletion</h3>
+                  <p className="text-xs text-[#cf202f]/70 mt-0.5">This action is irreversible and permanent.</p>
                 </div>
               </div>
-              <button 
+              <button
                 type="button"
                 onClick={() => !deleting && setShowDeleteModal(false)}
-                className="btn-icon text-btn"
+                className="p-1.5 rounded-full hover:bg-[#f7f7f7] dark:hover:bg-[#212327] text-[#5b616e] transition-colors"
                 disabled={deleting}
-                style={{ marginLeft: 'auto' }}
               >
-                <X className="icon-sm" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="glass-panel" style={{ padding: '12px 16px', background: 'rgba(239, 68, 68, 0.08)', borderColor: 'rgba(239, 68, 68, 0.2)' }}>
-              <p style={{ fontSize: '12px', fontWeight: '600', color: '#fca5a5', marginBottom: '6px' }}>
-                The following resources will be permanently purged:
-              </p>
-              <ul style={{ paddingLeft: '18px', fontSize: '12px', color: 'var(--color-body)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <li>All uploaded PDF/DOCX files from Tigris/S3 object storage</li>
+            <div className="p-4 rounded-xl bg-[#cf202f]/5 border border-[#cf202f]/15">
+              <p className="text-xs font-semibold text-[#cf202f] mb-2">The following resources will be permanently purged:</p>
+              <ul className="text-xs text-[#5b616e] dark:text-[#a8acb3] flex flex-col gap-1.5 pl-4 list-disc">
+                <li>All uploaded PDF/DOCX files from object storage</li>
                 <li>All vector embeddings & local search indices</li>
-                <li>All chat sessions, message histories, and inline citations</li>
-                <li>Your profile credentials, avatar, and settings preferences</li>
+                <li>All chat sessions, message histories, and citations</li>
+                <li>Your profile credentials, avatar, and preferences</li>
               </ul>
             </div>
 
             {deleteError && (
-              <div className="auth-error-banner" role="alert">
-                <AlertTriangle className="icon-sm text-danger" />
+              <div className="p-3 rounded-xl bg-[#cf202f]/10 border border-[#cf202f]/30 text-[#cf202f] text-sm flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                 <span>{deleteError}</span>
               </div>
             )}
 
-            <form onSubmit={handleConfirmDelete} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {/* Password Input */}
-              <div className="auth-input-group">
-                <label className="auth-field-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Lock className="icon-xs" />
-                  <span>ENTER PASSWORD TO CONFIRM</span>
+            <form onSubmit={handleConfirmDelete} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-mono text-xs uppercase tracking-wider text-[#5b616e] dark:text-[#a8acb3] flex items-center gap-1.5">
+                  <Lock className="w-3 h-3" />
+                  Enter Password to Confirm
                 </label>
                 <input
                   type="password"
@@ -375,14 +352,13 @@ const ProfilePage = () => {
                   placeholder="Your account password"
                   required
                   disabled={deleting}
-                  className="auth-text-input"
+                  className="w-full h-11 px-4 bg-[#f7f7f7] dark:bg-[#212327] border border-[#dee1e6] dark:border-[#212327] rounded-xl text-sm text-[#0a0b0d] dark:text-white outline-none focus:border-[#0052ff] transition-all"
                 />
               </div>
 
-              {/* Confirmation Text Input */}
-              <div className="auth-input-group">
-                <label className="auth-field-label">
-                  TYPE <span style={{ color: '#ef4444', fontFamily: 'var(--font-mono)' }}>DELETE MY ACCOUNT</span> BELOW
+              <div className="flex flex-col gap-1.5">
+                <label className="font-mono text-xs uppercase tracking-wider text-[#5b616e] dark:text-[#a8acb3]">
+                  Type <span className="text-[#cf202f]">DELETE MY ACCOUNT</span> below
                 </label>
                 <input
                   type="text"
@@ -391,35 +367,32 @@ const ProfilePage = () => {
                   placeholder="DELETE MY ACCOUNT"
                   required
                   disabled={deleting}
-                  className="auth-text-input"
+                  className="w-full h-11 px-4 bg-[#f7f7f7] dark:bg-[#212327] border border-[#dee1e6] dark:border-[#212327] rounded-xl text-sm text-[#0a0b0d] dark:text-white outline-none focus:border-[#cf202f] transition-all"
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+              <div className="flex gap-3 mt-2">
                 <button
                   type="button"
                   onClick={() => setShowDeleteModal(false)}
                   disabled={deleting}
-                  className="btn outline-btn"
-                  style={{ flex: 1 }}
+                  className="flex-1 h-11 rounded-full border border-[#dee1e6] dark:border-[#212327] text-sm text-[#5b616e] hover:bg-[#f7f7f7] dark:hover:bg-[#212327] transition-colors"
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   disabled={deleting || !password || confirmText.trim() !== 'DELETE MY ACCOUNT'}
-                  className="btn danger-btn"
-                  style={{ flex: 2 }}
+                  className="flex-[2] h-11 rounded-full bg-[#cf202f] hover:bg-[#a01524] disabled:bg-[#cf202f]/40 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                 >
                   {deleting ? (
                     <>
-                      <RefreshCw className="icon-xs animate-spin" />
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                       <span>Purging Account & Data...</span>
                     </>
                   ) : (
                     <>
-                      <Trash2 className="icon-xs" />
+                      <Trash2 className="w-3.5 h-3.5" />
                       <span>Permanently Delete Everything</span>
                     </>
                   )}
@@ -434,3 +407,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+

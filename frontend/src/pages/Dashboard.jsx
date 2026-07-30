@@ -1313,7 +1313,7 @@ const Dashboard = () => {
           {/* Empty State Hero - shown only if no messages and no document has been uploaded yet */}
           {!activeChat?.current_doc_id && messages.length === 0 && !streamedResponse && (
             <div className="empty-state-hero">
-              <h1 className="empty-state-wordmark">LEXIS</h1>
+              <h1 className="empty-state-wordmark">CV-INSIGHT</h1>
               <p className="empty-state-tagline">
                 Upload a document to generate embeddings and retrieve cited answers in real time.
               </p>
@@ -1769,7 +1769,7 @@ const Dashboard = () => {
       )}
 
       <footer className="footer-bar">
-        <div>© 2026 LEXIS CORP • SOC 2 TYPE II • 256-BIT AES</div>
+        <div>© 2026 CV-INSIGHT CORP • SOC 2 TYPE II • 256-BIT AES</div>
       </footer>
     </div>
   );

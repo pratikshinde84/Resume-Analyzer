@@ -115,9 +115,11 @@ const NavigationBar = ({
           <PanelLeft className="icon" />
         </button>
 
-        <Link to="/" className="logo-pill">
-          <LexisLogo size={16} />
-          <span className="logo-wordmark">LEXIS</span>
+        <Link to="/" className="logo-pill gap-2 no-underline">
+          <div className="w-7 h-7 rounded-full bg-[#0052ff] flex items-center justify-center text-white flex-shrink-0">
+            <LexisLogo size={14} />
+          </div>
+          <span className="logo-wordmark text-base font-semibold text-[var(--color-ink)]">Cv-Insight</span>
         </Link>
 
         <div className="nav-divider nav-divider-mobile-hide" />

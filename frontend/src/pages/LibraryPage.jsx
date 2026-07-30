@@ -291,7 +291,7 @@ const LibraryPage = () => {
           <div className="library-header-left">
             <h1 className="library-title">Document Library</h1>
             <p className="library-subtitle">
-              Manage, search, preview, and organize all documents indexed for Lexis RAG reasoning.
+              Manage, search, preview, and organize all documents indexed for Cv-Insight RAG reasoning.
             </p>
           </div>
 
@@ -421,7 +421,7 @@ const LibraryPage = () => {
             <p className="empty-desc">
               {searchQuery || typeFilter !== 'all'
                 ? 'Try adjusting your search keywords or resetting file filters.'
-                : 'Upload documents while conversing with Lexis on the Query Dashboard to view and manage your uploaded documents here.'}
+                : 'Upload documents while conversing with Cv-Insight on the Query Dashboard to view and manage your uploaded documents here.'}
             </p>
             {searchQuery || typeFilter !== 'all' ? (
               <button
@@ -653,7 +653,7 @@ const LibraryPage = () => {
                 }}
               >
                 <MessageSquare className="icon" />
-                <span>Query with Lexis</span>
+                <span>Query with Cv-Insight</span>
               </button>
 
               <div className="modal-footer-actions">

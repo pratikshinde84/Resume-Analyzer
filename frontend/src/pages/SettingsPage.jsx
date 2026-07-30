@@ -9,7 +9,7 @@ import { useTheme } from '../context/ThemeContext';
 import MessageContent from '../components/MessageContent';
 
 const previewMarkdownContent = `### Sample Header
-Here is a preview of the **Markdown rendering pipeline** inside Lexis:
+Here is a preview of the **Markdown rendering pipeline** inside Cv-Insight:
 - **Bold text** and *italicized emphasis*
 - Interactive citations page references [p. 1] or web sources [Web 1](https://google.com)
 - Inline code: \`const activeTheme = 'dark';\`
@@ -208,7 +208,7 @@ const SettingsPage = () => {
           <div className="settings-header-left">
             <h1 className="settings-title">Settings & Preferences</h1>
             <p className="settings-subtitle">
-              Customize how Lexis answers your questions, indexes documents, and manages API connections.
+              Customize how Cv-Insight answers your questions, indexes documents, and manages API connections.
             </p>
           </div>
 
@@ -373,7 +373,7 @@ const SettingsPage = () => {
                   <div className="field-header flex-between">
                     <div>
                       <label className="field-label">Response Tone & Creativity</label>
-                      <span className="field-help-text">Controls how strictly Lexis follows exact document wording.</span>
+                      <span className="field-help-text">Controls how strictly Cv-Insight follows exact document wording.</span>
                     </div>
                     <span className="tone-pill">{currentTone.title} ({settings.temperature})</span>
                   </div>
@@ -470,7 +470,7 @@ const SettingsPage = () => {
               <div className="settings-section">
                 <div className="section-title-box">
                   <h2>Document Index & Search</h2>
-                  <p className="section-desc">Configure how Lexis reads, breaks down, and indexes your documents for semantic search.</p>
+                  <p className="section-desc">Configure how Cv-Insight reads, breaks down, and indexes your documents for semantic search.</p>
                 </div>
 
                 {/* Chunk Size */}
@@ -540,7 +540,7 @@ const SettingsPage = () => {
               <div className="settings-section">
                 <div className="section-title-box">
                   <h2>Developer API Keys</h2>
-                  <p className="section-desc">Manage programmatic access tokens for connecting external tools to Lexis.</p>
+                  <p className="section-desc">Manage programmatic access tokens for connecting external tools to Cv-Insight.</p>
                 </div>
                 <ApiKeyManager />
               </div>

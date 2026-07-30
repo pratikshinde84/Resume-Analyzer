@@ -89,7 +89,7 @@ const ProfileDropdown = ({ user, onLogout }) => {
     setOpen(false);
   };
 
-  const userEmail = user?.email || 'user@lexis.internal';
+  const userEmail = user?.email || 'user@cv-insight.internal';
   const initial = userEmail[0].toUpperCase();
 
   return (

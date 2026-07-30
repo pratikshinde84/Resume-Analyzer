@@ -177,7 +177,7 @@ const OnboardingPage = () => {
         <div className="onboarding-header">
           <div className="onboarding-logo" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <LexisLogo size={20} />
-            <span>LEXIS</span>
+            <span>CV-INSIGHT</span>
           </div>
 
           <div className="onboarding-steps">
@@ -193,7 +193,7 @@ const OnboardingPage = () => {
         {step === 1 && (
           <form onSubmit={handleSubmitProfile} className="onboarding-body">
             <div>
-              <h1 className="onboarding-title">Welcome to LEXIS! 🎉</h1>
+              <h1 className="onboarding-title">Welcome to CV-INSIGHT! 🎉</h1>
               <p className="onboarding-subtitle">
                 Let's set up your profile to personalize your RAG search workspace.
               </p>
@@ -260,7 +260,7 @@ const OnboardingPage = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="e.g. alex_lexis"
+                placeholder="e.g. alex_cvinsight"
                 required
                 className="auth-text-input"
               />
@@ -273,7 +273,7 @@ const OnboardingPage = () => {
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder={username || "How you'll appear in Lexis"}
+                placeholder={username || "How you'll appear in Cv-Insight"}
                 className="auth-text-input"
               />
             </div>
@@ -330,7 +330,7 @@ const OnboardingPage = () => {
             <div>
               <h2 className="onboarding-title">Profile Updated!</h2>
               <p className="onboarding-subtitle" style={{ maxWidth: 360, margin: '8px auto 0 auto' }}>
-                Would you like a 60-second interactive tour of the LEXIS RAG interface?
+                Would you like a 60-second interactive tour of the CV-INSIGHT RAG interface?
               </p>
             </div>
 

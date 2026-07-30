@@ -111,7 +111,7 @@ async def stream_gemini(prompt: str) -> AsyncGenerator[str, None]:
                 raise LLMUnavailableError("GEMINI_API_KEY is missing or empty")
 
             client = genai.Client(api_key=api_key, http_options={"timeout": 30000})
-            models_to_try = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"]
+            models_to_try = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
             
             for model_name in models_to_try:
                 try:
@@ -134,15 +134,36 @@ async def stream_gemini(prompt: str) -> AsyncGenerator[str, None]:
                     if any(term in err_str for term in ["401", "403", "invalid_api_key", "unauthorized"]):
                         break
                     continue
+            if settings.GROQ_API_KEY:
+                logger.warning("Gemini quota/model error. Seamlessly falling back to Groq...")
+                async for chunk in stream_groq(prompt):
+                    yield chunk
+                return
+
             llm_breaker._record_failure(Exception("All Gemini models failed"))
             raise LLMUnavailableError("All Gemini models failed to respond")
         except CircuitBreakerOpenException as cbo:
+            if settings.GROQ_API_KEY:
+                logger.warning("Gemini circuit breaker open. Seamlessly falling back to Groq...")
+                async for chunk in stream_groq(prompt):
+                    yield chunk
+                return
             raise cbo
         except LLMUnavailableError as lue:
+            if settings.GROQ_API_KEY:
+                logger.warning("Gemini unavailable. Seamlessly falling back to Groq...")
+                async for chunk in stream_groq(prompt):
+                    yield chunk
+                return
             raise lue
         except Exception as e:
             llm_breaker._record_failure(e)
             logger.error(f"Google GenAI API streaming failed: {type(e).__name__}: {repr(e)}", exc_info=True)
+            if settings.GROQ_API_KEY:
+                logger.warning("Google GenAI API failed. Seamlessly falling back to Groq...")
+                async for chunk in stream_groq(prompt):
+                    yield chunk
+                return
             raise LLMUnavailableError(f"Google GenAI API streaming failed: {e}")
 
     # Fallback to mock only if FORCE_MOCK_LLM or GEMINI_API_KEY is not configured

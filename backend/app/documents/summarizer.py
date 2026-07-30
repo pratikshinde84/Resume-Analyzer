@@ -131,7 +131,7 @@ async def generate_document_summary(
                 try:
                     from google import genai
                     client = genai.Client(api_key=settings.GEMINI_API_KEY, http_options={"timeout": 30000})
-                    for m in ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"]:
+                    for m in ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-pro"]:
                         try:
                             # Use asyncio.wait_for and asyncio.to_thread to prevent blocking the event loop and enforce a timeout
                             res = await asyncio.wait_for(

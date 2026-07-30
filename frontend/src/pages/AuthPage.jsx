@@ -120,170 +120,179 @@ const AuthPage = () => {
 
   return (
     <div className="auth-page">
-      {/* LEFT PANE — Brand / Visual (50%) */}
-      <div className="auth-brand-pane">
-        {/* Chamfered background plate behind wordmark */}
-        <div className="brand-bg-plate" />
+      {/* LEFT PANE — Dark Hero Editorial Brand (50%) */}
+      <div className="auth-brand-pane bg-[#0a0b0d] text-white p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+        {/* Ambient Dark Gradient Plate */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0052ff]/10 via-transparent to-black pointer-events-none" />
 
-        {/* Floating Accent Amber Squares */}
-        <div className="brand-floating-square" style={{ top: '15%', left: '12%' }} />
-        <div className="brand-floating-square" style={{ top: '22%', right: '15%' }} />
-        <div className="brand-floating-square" style={{ bottom: '20%', left: '16%' }} />
-        <div className="brand-floating-square" style={{ bottom: '28%', right: '12%' }} />
+        {/* Top Brand Tag */}
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#0052ff] flex items-center justify-center text-white shadow-lg">
+            <LexisLogo size={20} />
+          </div>
+          <span className="font-sans text-xl tracking-tight font-medium text-white">Cv-Insight</span>
+        </div>
 
-        {/* Centered Brand Content */}
-        <div className="brand-content">
-          <h1 className="brand-wordmark">LEXIS</h1>
-          <p className="brand-tagline">Retrieval-Augmented Generation Workspace</p>
-
-          <div className="brand-bullets">
-            <div className="bullet-item">
-              <span className="bullet-dot" />
-              <span>Upload documents and index instantly</span>
+        {/* Floating Product UI Mockup Card (Coinbase Dark Elevated Pattern) */}
+        <div className="relative z-10 my-auto py-8">
+          <h1 className="font-sans text-4xl lg:text-5xl font-normal tracking-[#-1.5px] leading-tight text-white mb-6">
+            Quietly confident document intelligence.
+          </h1>
+          
+          <div className="bg-[#16181c] border border-white/10 rounded-[24px] p-6 lg:p-8 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#05b169]" />
+                <span className="font-mono text-xs text-white/70 uppercase tracking-widest">RAG Engine Online</span>
+              </div>
+              <span className="px-3 py-1 rounded-full text-xs font-mono bg-[#0052ff]/20 text-[#0052ff] border border-[#0052ff]/30">Gemini 1.5 Pro</span>
             </div>
-            <div className="bullet-item">
-              <span className="bullet-dot" />
-              <span>Query with Gemini 1.5 Flash or Groq Llama 3</span>
-            </div>
-            <div className="bullet-item">
-              <span className="bullet-dot" />
-              <span>Cited sources with every response</span>
+            
+            <p className="text-sm text-[#a8acb3] leading-relaxed mb-4">
+              "Extract citations, search dense legal indexes, and synthesize answer passages with sub-second latency."
+            </p>
+            
+            <div className="flex items-center gap-3 pt-2">
+              <span className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-white/80">SOC 2 TYPE II</span>
+              <span className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-white/80">AES-256</span>
             </div>
           </div>
         </div>
 
-        {/* Mascot Robot Character & Speech Bubble */}
-        <div className="brand-mascot-container">
-          <div className="mascot-bubble">"Welcome to Lexis! Your documents are waiting."</div>
-          <div style={{ fontSize: '48px', lineHeight: 1 }}>🤖</div>
+        {/* Footer info */}
+        <div className="relative z-10 flex items-center justify-between text-xs text-[#7c828a]">
+          <span>© 2026 Cv-Insight Systems Inc.</span>
+          <span className="font-mono">v2.4.0 • Institutional</span>
         </div>
       </div>
 
       {/* RIGHT PANE — Form Panel (50%) */}
-      <div className="auth-form-pane">
-        <div className="auth-form-container">
+      <div className="auth-form-pane flex items-center justify-center p-6 md:p-12 bg-white dark:bg-[#0a0b0d]">
+        <div className="auth-form-container w-full max-width-[420px] max-w-md flex flex-col gap-6">
           {/* Header Inside Form */}
-          <div className="auth-form-header">
-            <div className="logo-pill" style={{ display: 'inline-flex', border: '1.5px solid var(--color-primary)', margin: '0 auto 12px auto', gap: '8px' }}>
+          <div className="auth-form-header text-center flex flex-col items-center">
+            <div className="px-4 py-1.5 rounded-full border border-[#dee1e6] dark:border-[#212327] bg-[#f7f7f7] dark:bg-[#16181c] inline-flex items-center gap-2 mb-4">
               <LexisLogo size={14} />
-              <span className="logo-wordmark" style={{ fontSize: '11px' }}>LEXIS</span>
+              <span className="font-mono text-xs tracking-wider text-[#0a0b0d] dark:text-white uppercase">CV-INSIGHT AUTH</span>
             </div>
-            <h2 className="auth-form-title">{isLogin ? 'Sign In' : 'Register'}</h2>
-            <p className="auth-form-subtitle">
-              {isLogin ? 'Authenticate to access your workspace' : 'Create new workspace access account'}
+            <h2 className="font-sans text-3xl font-normal tracking-tight text-[#0a0b0d] dark:text-white">
+              {isLogin ? 'Welcome back' : 'Create account'}
+            </h2>
+            <p className="text-sm text-[#5b616e] dark:text-[#a8acb3] mt-1">
+              {isLogin ? 'Sign in to access your secure document workspace' : 'Get started with instant vector search and AI analysis'}
             </p>
           </div>
 
-          {/* Info message banner (e.g. account deletion) */}
+          {/* Info message banner */}
           {location.state?.message && !serverError && (
-            <div className="auth-error-banner" style={{ background: 'rgba(16, 185, 129, 0.1)', borderColor: 'rgba(16, 185, 129, 0.3)', color: '#10B981' }} role="status">
-              <span className="auth-error-icon">✅</span>
-              <span className="auth-error-text">{location.state.message}</span>
+            <div className="p-4 rounded-xl bg-[#05b169]/10 border border-[#05b169]/30 text-[#05b169] text-sm flex items-center gap-3" role="status">
+              <span>✅</span>
+              <span>{location.state.message}</span>
             </div>
           )}
 
-          {/* Modern Toast Error Banner */}
+          {/* Toast Error Banner */}
           {serverError && (
-            <div className="auth-error-banner" role="alert">
-              <span className="auth-error-icon">⚠️</span>
-              <span className="auth-error-text">{serverError}</span>
+            <div className="p-4 rounded-xl bg-[#cf202f]/10 border border-[#cf202f]/30 text-[#cf202f] text-sm flex items-center gap-3" role="alert">
+              <span>⚠️</span>
+              <span>{serverError}</span>
             </div>
           )}
 
           {/* Form Controls */}
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="auth-input-group">
-              <label htmlFor="email" className="auth-field-label">EMAIL ADDRESS</label>
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="email" className="font-mono text-xs uppercase tracking-wider text-[#5b616e] dark:text-[#a8acb3]">EMAIL ADDRESS</label>
               <input
                 type="email"
                 id="email"
-                placeholder="operator@lexis.internal"
+                placeholder="name@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`auth-text-input ${emailError ? 'input-error' : ''}`}
+                className={`w-full h-12 px-4 bg-white dark:bg-[#16181c] border ${emailError ? 'border-[#cf202f]' : 'border-[#dee1e6] dark:border-[#212327]'} rounded-[12px] text-sm text-[#0a0b0d] dark:text-white outline-none focus:border-[#0052ff] focus:ring-2 focus:ring-[#0052ff]/20 transition-all`}
                 required
               />
               {emailError && (
-                <span style={{ color: '#e60012', fontSize: '12px', fontWeight: '700', marginTop: '4px', display: 'block' }}>
+                <span className="text-xs text-[#cf202f] font-medium mt-0.5">
                   {emailError}
                 </span>
               )}
             </div>
 
-            <div className="auth-input-group">
-              <label htmlFor="password" className="auth-field-label">PASSWORD</label>
-              <div className="auth-password-wrapper">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="password" className="font-mono text-xs uppercase tracking-wider text-[#5b616e] dark:text-[#a8acb3]">PASSWORD</label>
+              <div className="relative flex items-center">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`auth-text-input ${passwordError ? 'input-error' : ''}`}
+                  className={`w-full h-12 pl-4 pr-16 bg-white dark:bg-[#16181c] border ${passwordError ? 'border-[#cf202f]' : 'border-[#dee1e6] dark:border-[#212327]'} rounded-[12px] text-sm text-[#0a0b0d] dark:text-white outline-none focus:border-[#0052ff] focus:ring-2 focus:ring-[#0052ff]/20 transition-all`}
                   required
                 />
                 <button
                   type="button"
-                  className="auth-password-toggle"
+                  className="absolute right-3 font-mono text-xs text-[#5b616e] hover:text-[#0a0b0d] dark:hover:text-white px-2 py-1 rounded-full"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? 'HIDE' : 'SHOW'}
                 </button>
               </div>
               {passwordError && (
-                <span style={{ color: '#e60012', fontSize: '12px', fontWeight: '700', marginTop: '4px', display: 'block' }}>
+                <span className="text-xs text-[#cf202f] font-medium mt-0.5">
                   {passwordError}
                 </span>
               )}
             </div>
 
             {!isLogin && (
-              <div className="auth-input-group">
-                <label htmlFor="confirmPassword" className="auth-field-label">CONFIRM PASSWORD</label>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="confirmPassword" className="font-mono text-xs uppercase tracking-wider text-[#5b616e] dark:text-[#a8acb3]">CONFIRM PASSWORD</label>
                 <input
                   type="password"
                   id="confirmPassword"
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`auth-text-input ${confirmPasswordError ? 'input-error' : ''}`}
+                  className={`w-full h-12 px-4 bg-white dark:bg-[#16181c] border ${confirmPasswordError ? 'border-[#cf202f]' : 'border-[#dee1e6] dark:border-[#212327]'} rounded-[12px] text-sm text-[#0a0b0d] dark:text-white outline-none focus:border-[#0052ff] focus:ring-2 focus:ring-[#0052ff]/20 transition-all`}
                   required
                 />
                 {confirmPasswordError && (
-                  <span style={{ color: '#e60012', fontSize: '12px', fontWeight: '700', marginTop: '4px', display: 'block' }}>
+                  <span className="text-xs text-[#cf202f] font-medium mt-0.5">
                     {confirmPasswordError}
                   </span>
                 )}
               </div>
             )}
 
-            {/* Submit Button */}
+            {/* Submit Button - Coinbase Pill */}
             <button
               type="submit"
-              className="auth-button-submit"
+              className="w-full h-12 bg-[#0052ff] hover:bg-[#003ecc] disabled:bg-[#a8b8cc] text-white rounded-full font-semibold text-base transition-all duration-150 flex items-center justify-center gap-2 mt-2 shadow-sm cursor-pointer disabled:cursor-not-allowed"
               disabled={isFormInvalid}
             >
               {isSubmitting ? (
                 <>
-                  <div className="spinner" />
-                  <span>AUTHENTICATING...</span>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Processing...</span>
                 </>
               ) : isLogin ? (
-                'SIGN IN ➔'
+                'Sign In'
               ) : (
-                'CREATE ACCOUNT ➔'
+                'Create Account'
               )}
             </button>
           </form>
 
           {/* Toggle Section */}
-          <div className="auth-toggle">
-            <span className="auth-toggle-text">
-              {isLogin ? "Need account?" : 'Already registered?'}
+          <div className="flex items-center justify-center gap-2 text-sm mt-2">
+            <span className="text-[#5b616e] dark:text-[#a8acb3]">
+              {isLogin ? "Don't have an account?" : 'Already registered?'}
             </span>
             <button
               type="button"
-              className="auth-toggle-link"
+              className="text-[#0052ff] hover:underline font-medium"
               onClick={() => {
                 setIsLogin(!isLogin);
                 setServerError('');
@@ -292,15 +301,8 @@ const AuthPage = () => {
                 setConfirmPasswordError('');
               }}
             >
-              {isLogin ? 'SIGN UP FREE' : 'SIGN IN'}
+              {isLogin ? 'Sign up' : 'Sign in'}
             </button>
-          </div>
-
-          {/* Trust Bar */}
-          <div className="auth-trust-bar">
-            <span className="trust-badge">SOC 2 TYPE II</span>
-            <span className="trust-badge">END-TO-END ENCRYPTED</span>
-            <span className="trust-badge">AES-256</span>
           </div>
         </div>
       </div>
