@@ -21,6 +21,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
 # Register routers
 app.include_router(auth_router)
 app.include_router(documents_router)
@@ -143,6 +144,7 @@ from app.config import settings
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://cv-insight-api.onrender.com/",
 ]
 if settings.CORS_ORIGINS:
     origins.extend([o.strip() for o in settings.CORS_ORIGINS.split(",") if o.strip()])
