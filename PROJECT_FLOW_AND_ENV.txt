@@ -1,0 +1,168 @@
+CV-Insight Project Flow and Environment Overview
+================================================
+
+1. Backend environment services and what they do
+------------------------------------------------
+
+GEMINI_API_KEY
+- Used for LLM-based document summarization and chat answer generation.
+- The backend tries Gemini first for summaries and streaming responses.
+
+GROQ_API_KEY
+- Backup LLM provider.
+- Used if Gemini fails or is unavailable.
+
+TAVILY_API_KEY
+- Enables optional web search grounding for RAG responses.
+- Adds external web results to the prompt when enabled.
+
+DATABASE_PASSWORD
+- Password for the Neon/Postgres database instance.
+- Used by the configured database connection string.
+
+DATABASE_URL
+- Main PostgreSQL connection string.
+- Used by the app to connect to NeonDB for storing users, chats, messages, documents, and citations.
+
+JWT_SECRET
+- Secret key used to sign and verify JWT tokens.
+- Protects authenticated routes.
+
+TIGRIS_ACCESS_KEY_ID / TIGRIS_SECRET_KEY
+- Credentials for Tigris/S3-compatible object storage.
+- Used to upload raw PDFs and backup vector index files.
+
+ENDPOINT_URL_S3 / ENDPOINT_URL_IAM
+- Storage endpoint settings.
+- Used by the S3 client to connect to object storage.
+
+S3_BUCKET_NAME
+- The bucket/container where uploaded PDFs and index files are stored.
+
+FORCE_MOCK_S3
+- If enabled, the storage layer uses a mock client instead of real object storage.
+
+FORCE_MOCK_LLM
+- If enabled, the LLM layer uses mocked responses instead of real Gemini/Groq calls.
+
+ENVIRONMENT
+- Runtime environment label, currently local.
+
+FORCE_IPV4
+- Forces IPv4 networking behavior.
+
+STORAGE_INDICES_DIR
+- Local folder where LlamaIndex vector index files are persisted.
+
+REDIS_URL
+- Connection string for Redis.
+- Used for caching and invalidating cache entries, not as the main vector database.
+
+LANGFUSE_SECRET_KEY / LANGFUSE_PUBLIC_KEY / LANGFUSE_BASE_URL
+- Observability/tracing configuration.
+- Intended for tracing LLM/app calls, though the current codebase does not appear to actively instrument Langfuse.
+
+
+2. How the app works from start to finish
+----------------------------------------
+
+A. User signs in / authenticates
+- The frontend sends login/register requests to the backend auth routes.
+- JWT middleware validates the token and attaches the user identity to the request.
+
+B. User uploads a PDF
+- The frontend sends the file to the backend upload endpoint.
+- The backend validates the file name, type, and size.
+- The uploaded file bytes are read from the request.
+
+C. File is stored in object storage
+- The backend uploads the original PDF bytes to Tigris/S3 object storage.
+- The object key is structured as:
+  user_id/doc_id/filename
+
+D. PDF is parsed into text
+- The backend writes the PDF to a temporary file.
+- It uses a PDF reader to extract text from each page.
+- The text is cleaned and normalized.
+
+E. Text is chunked
+- The extracted text is split into smaller chunks using LlamaIndex SentenceSplitter.
+- These chunks become the retrieval units for later question answering.
+
+F. A vector index is built
+- LlamaIndex builds a VectorStoreIndex from the parsed document chunks.
+- The index is persisted locally in the storage/indices folder.
+- The index files are also uploaded to object storage as a backup.
+
+G. Metadata is stored in PostgreSQL
+- A document record is created in the database with:
+  - document ID
+  - user ID
+  - filename
+  - storage key
+  - status
+  - summary
+  - size
+  - upload date
+  - expiry date
+
+H. A summary is generated
+- The backend tries to generate a summary using Gemini.
+- If Gemini fails, it falls back to Groq.
+- If both fail, it uses a simple fallback summary based on the document text.
+- This summary is stored with the document.
+
+I. Redis is used for caching and invalidation
+- Redis is not the main vector store.
+- Redis stores lightweight cache data and is used to invalidate chat/document-related cached entries after updates.
+
+J. Later, the user asks a question about the document
+- The chat pipeline retrieves the chat’s attached document.
+- It loads the persisted index from disk or restores it from object storage.
+- The retriever fetches the most relevant chunks from the index.
+
+K. The retrieved chunks are combined into a prompt
+- These chunks form the context given to the LLM.
+- The app may also optionally add Tavily web search results.
+
+L. The LLM generates the answer
+- Gemini or Groq streams the response token by token.
+- The answer is returned to the frontend via SSE streaming.
+
+M. Citations and messages are saved
+- The assistant answer and the user question are stored in the database.
+- Citation entries are created to point back to relevant document chunks/pages.
+
+
+3. Important implementation detail
+---------------------------------
+The current codebase is using mocked embeddings in the indexing path.
+That means:
+- The app is using LlamaIndex with MockEmbedding for indexing/retrieval.
+- It uses real LLM providers (Gemini/Groq) for summaries and answers.
+- The vector retrieval is based on the local persisted index, not a dedicated external vector DB.
+
+
+4. Core files involved
+---------------------
+- backend/.env
+- backend/app/routers/documents.py
+- backend/app/rag/pipeline.py
+- backend/app/storage/r2_client.py
+- backend/app/cache.py
+- backend/app/rag/providers.py
+- backend/app/rag/web_search.py
+- backend/app/auth/middleware.py
+
+
+5. In short
+-----------
+The app flow is:
+1. User uploads PDF
+2. Backend validates and stores file in object storage
+3. PDF text is extracted and chunked
+4. LlamaIndex builds a local index from the chunks
+5. Metadata and summary are saved in PostgreSQL
+6. Redis is used for caching/invalidation
+7. Later, user questions are answered by retrieving relevant chunks and sending them to Gemini/Groq
+8. Answers and citations are saved back to the database
