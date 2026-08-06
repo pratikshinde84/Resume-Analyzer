@@ -4,7 +4,7 @@ import bcrypt
 def hash_password(password: str) -> str:
     """
     Generate a bcrypt hash of a plain text password.
-    """
+    """ 
     # bcrypt requires bytes
     pwd_bytes = password.encode('utf-8')
     # Generate salt and hash
