@@ -295,3 +295,5 @@ Lexis is a functional MVP with production infrastructure in place. Planned upgra
 - **Agentic Query Routing** — Add a lightweight router that classifies queries and decides whether to hit the local index, trigger web search, or escalate to a more capable model.
 - **Multi-modal Support** — Extend document ingestion to handle images and tables extracted from PDFs.
 - **Usage Analytics Dashboard** — Surface token consumption, cache hit rates, and circuit breaker trip history in the Dev Console.
+#   C V - I N S I G H T  
+ 
