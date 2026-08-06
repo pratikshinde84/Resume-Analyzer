@@ -144,6 +144,7 @@ from app.config import settings
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://cv-insight-123.vercel.app",
     "https://cv-insight-123.vercel.app/",
 ]
 if settings.CORS_ORIGINS:
